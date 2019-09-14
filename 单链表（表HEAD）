@@ -1,0 +1,103 @@
+#include<cstring>
+#include<iostream>
+using namespace std;
+#define STACK_INIT_SIZE 100
+#define STACKINCREMENT 10
+struct Stack
+{
+	int *base;
+	int *top;
+	int stacksize;//栈的空间大小
+};
+void InitStack(Stack&S)//构造一个空栈
+{
+	S.base = (int*)malloc(STACK_INIT_SIZE * sizeof(int));
+	if (S.base == NULL)
+		cout << "内存分配失败，请重新尝试！";
+	else
+	{
+		S.top = S.base;
+		S.stacksize = STACK_INIT_SIZE;
+	}
+}
+void DestroyStack(Stack&S)//摧毁栈S
+{
+	if (S.base)
+	{
+	delete S.base;
+	S.stacksize = 0;
+	}
+}
+void ClearStack(Stack&S)// 将栈清空
+{
+	if ( S.base)
+	{
+		S.top = S.base;
+		S.stacksize = 0;
+	}
+}
+int getLength(Stack S)// 求栈的长度	
+{
+	if(S.base)
+	return (S.top - S.base);
+	else
+		return 0;
+}
+bool IsEmpty(Stack S)// 判断栈是否为空
+{
+	if (S.base == S.top)
+		return true;
+	else
+		return false;
+}
+void ClearStack(Stack&S)// 将栈清空
+{
+	if (S.base)
+		S.top = S.base;
+	else
+		cout << "不存在栈" << endl;
+}
+void GetTop(Stack S, int&e)//取顶元素
+{
+	if (S.top != S.base&&S.base)
+		e = *S.top - 1;
+}
+void Push(Stack&S, int e)//入栈
+{
+	if (S.base)
+	{
+
+		if (S.top - S.base >= S.stacksize)
+		{
+			S.base = (int*)realloc(S.base, (S.stacksize + STACKINCREMENT) * sizeof(int));
+			if (!S.base)
+				return;
+			S.top = S.base + S.stacksize;
+			S.stacksize += STACKINCREMENT;
+		}
+		*S.top = e;
+		S.top++;//？？？？（如果top指向最后一个内存空间，则top++得到的结果是什么）
+	}
+}
+void Pop(Stack&S, int&e)//出栈
+{
+	if (S.top == S.base)
+		return;
+	e = *(S.top - 1);
+	S.top--;
+}
+//当数据元素较多或者是抽象数据结构时，可以用函数来更好地输出数据
+void StackTraverse(Stack S)//遍历栈
+{
+	int*p = S.base;
+	int i = 0;
+	if (S.top != p&&p) 
+	{
+		while (p != S.top)
+		{
+			cout << p[i] << endl;
+			i++;
+			p = p + 1;
+		}
+	}
+}
