@@ -1,0 +1,125 @@
+//表head
+
+#include<iostream>
+using namespace std;
+typedef struct LNode
+{
+	int data;
+	LNode*next;
+}LNode, *LinkList;
+void InitList_L(LinkList&L,int n)//创建一个结点数为n的链表
+{
+	L = new LNode;
+	int i = 0;
+	L = NULL;
+	LNode*p1, *p2;
+	p1 = new LNode;
+	p2 = p1;
+	cout << "输入信息：";
+	cin >> p1->data;
+	while (i<n)
+	{
+		i++;
+		if (L == NULL)
+			L = p1;
+		else
+			p2->next = p1;
+		p2 = p1;
+		p1 = new LNode;
+		cout << "请继续输入:";
+		cin >> p1->data;
+	}
+	p2->next = NULL;
+	delete p1;
+}
+void ListInser_L(LinkList&L, int i, int &e)//在第i个位置插入一个数据元素
+{
+	LinkList p = L;
+	int j = 1;
+	while (p&&j < i-1)
+	{
+		p = p->next;
+		j++;
+	}
+	if (!p || j > i)
+		return;
+	else
+	{
+		LinkList s = new LNode;
+		cout << "输入插入结点的数据：";
+		cin >> s->data;
+		s->next = p->next;
+		p->next = s;
+	}
+}
+void ListDelete_L(LinkList&L, int i, int&e)//删除第i个位置的数据元素并返回该数据元素
+{
+	LinkList p = L;
+	int j = 1;
+	while (p && j < i - 1)//寻找到第i个位置的前一个位置
+	{
+		p = p->next;
+		++j;
+	}
+	if (!p || j > i)
+		return;
+	LinkList q = p->next;
+	e = q->data;
+	p->next = q->next;
+	delete q;
+}
+int ListLength_L(LinkList L)//返回该链表长度
+{
+	int i = 0;
+	LinkList p = L;
+	while (p != NULL)
+	{
+		i++;
+		p = p->next;
+	}
+	return i;
+
+}
+void GetElem_L(LinkList L, int i,int&e)//返回某结点某数据项
+{
+	LinkList p = L;
+	int j = 0;
+	while (p&&j < i)
+	{
+		p = p->next;
+		j++;
+	}
+	if (!p || j > i)
+		return;
+	e= p->data;
+}
+LinkList ListFind_L(LinkList L, int i)//寻找第i个结点并返回其地址
+{
+	LinkList p = L;
+	int j = 0;
+	while (p&&j < i)
+	{
+		p = p->next;
+		j++;
+	}
+	return p;
+}
+bool IsEmpty(LinkList L)//判断单链表是否为空
+{
+	if (L != NULL)
+		return false;
+	else
+		return true;
+}
+void ListClear(LinkList&L)//清空单链表
+{
+	delete L;
+}
+void Traverse(LinkList L)//遍历单链表
+{
+	while (L != NULL)
+	{
+	cout << "数据为：" << L->data << endl;
+	L = L->next;
+	}
+}
