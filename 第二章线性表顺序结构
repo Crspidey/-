@@ -3,10 +3,12 @@
 using namespace std;
 #define LIST_INIT_SIZE 100//顺序表存储空间初始分配量
 #define LISTINCREMENT 10//顺序表存储空间分配增量
+
+//该例子的数据元素暂时设为学生成绩。
 struct List {
 	int *elem;//存储空间基本地址
 	int length;//当前顺序表的长度
-	int listsize;//当前分配的存储容量
+	int listsize;//顺序表的最大容量
 };
 bool compare(int a, int b)
 {
@@ -15,42 +17,60 @@ bool compare(int a, int b)
 	else
 		return false;
 }
-void InitList(List&L)
+void InitList(List&L)//创建空表
 {
-	L.elem = (int*)malloc(LISTINCREMENT* sizeof(int));
-		if(L.elem==NULL)
-		cout<<"内存申请失败"<<endl;
+	L.elem = (int*)malloc(LISTINCREMENT * sizeof(int));
+	if (L.elem == NULL)
+		cout << "内存申请失败" << "请再次尝试"<<endl;
+	else
+	{
 		L.length = 0;
-		L.listsize =LIST_INIT_SIZE ;
+	L.listsize = LIST_INIT_SIZE;
+    }
 }
-void DestroyList(List&L)
+void MakeList(List&L)//创建顺序表
+{
+	int i = 0;
+	cout << "请输入数据元素:";
+	for (; i < L.length; i++) 
+	{
+		cin >> L.elem[i];
+		cout << endl;
+		if (i == L.length - 2)
+			cout << "请输入最后一个数据元素：";
+		else
+			cout << "请继续输入：";
+	}
+
+}
+void DestroyList(List&L)//摧毁顺序表
 {
 	free(L.elem);
 	L.elem = NULL;
 	L.length = 0;
 	L.listsize = 0;
 }
-void ClearList(List&L)
+void ClearList(List&L)//清空顺序表
 {
 	L.length = 0;
 }
-bool ListEmpty(List L)
+bool ListEmpty(List L)//判断顺序表是否为空
 {
 	if (L.length == 0)
 		return true;
 	else
 		return false;
 }
-int ListLength(List L)
+int ListLength(List L)//取顺序表长度
 {
 		return L.length;
 }
-int GetElme(List L,int i,int&e)
+int GetElme(List L,int i,int&e)//取顺序表中第i个元素的值	
 {
 	e = L.elem[i-1];
 	return e;
 }
-int LocateElem(List L, int e,bool(compare)(int a,int b))
+int LocateElem(List L, int e,bool(compare)(int a,int b))//返回L中第一个比e大的数据元素（返回第一个与e满足条件compare()的数据元素）
 {
 	int i = 1;
 	while (true)
@@ -65,6 +85,7 @@ int LocateElem(List L, int e,bool(compare)(int a,int b))
 		i++;
     }
 }
+//返回第i个元素的前驱
 int*PriorElem(List L, int cur_e,int *pre_e)	//int*pre_e=(int*)malloc(sizeof(int));
 {
 	if (L.elem[0] == cur_e&&cur_e<L.length)
@@ -78,6 +99,7 @@ int*PriorElem(List L, int cur_e,int *pre_e)	//int*pre_e=(int*)malloc(sizeof(int)
 		}
 	}
 }
+//返回第i个元素的后驱
 int*NextListElem(List L, int cur_e, int*pre_e)//	int*pre_e = new int;
 {
 	int i = 0;
@@ -97,10 +119,20 @@ int*NextListElem(List L, int cur_e, int*pre_e)//	int*pre_e = new int;
 	//if (L.elem[L.length] == cur_e&&cur_e<L.length)
 		//return NULL;
 }
-void ListInser(List&L, int e, int i)
-{
-	if ((L.length + 1) * sizeof(int) > LIST_INIT_SIZE||i<1||i>L.length+1)
+void ListInser(List&L, int e, int i)//在顺序表第i个位置插入元素
+{//   if ( i < 1 || i > L.length + 1) return ERROR; if ( L.length >= L.listsize ) 
+	//newbase = (ElemType *)realloc(L.elem, (L.listsize + LISTINCREMENT) * sizeof(ElemType));
+
+	if (i<1 || i>L.length + 1)
+
 		cout << "无法插入！" << endl;
+	else if (L.length >= L.listsize)
+	{
+		L.elem = (int *)realloc(L.elem, (L.listsize + LISTINCREMENT) * sizeof(int));
+		L.listsize += LISTINCREMENT;
+	}
+	else if(L.elem == NULL)
+		cout << "内存申请失败" << endl;
 	else
 	{
 		for (int j = L.length; j <= i; j--)
@@ -109,12 +141,16 @@ void ListInser(List&L, int e, int i)
 	L.elem[i - 1] = e;
 	++L.length;
 }
+void SetElem(List&L, int i,int e)// 修改顺序表中第i个元素的值
+{
+	L.elem[i - 1] = e;
+}
 
-int ListDelete(List&L, int e, int i)
+int ListDelete(List&L, int e, int i)//删除顺序表中第i个元素并返回第i个元素的值
 {
 	if (i<1 && i>L.length)
 		return 0;
-	else 
+	else
 	{
 		e = L.elem[i - 1];
 		for (int j = i; i < L.length; j++)
@@ -122,5 +158,10 @@ int ListDelete(List&L, int e, int i)
 		--L.length;
 		return e;
 	}
+}
+void Traverse(List L)// 遍历顺序表
+{
+	for (int i = 0; i < L.length; i++)
+		cout << "该顺序表数据为：" << L.elem[i]<<endl;
 }
 
