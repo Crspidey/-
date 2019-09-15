@@ -1,0 +1,72 @@
+#include<iostream>
+using namespace std;
+#define ERROR -2
+#define QUEUC_INIT_SIZE 100
+struct Queuc
+{
+	int front;
+	int rear;
+	int*elem;
+};
+void InitQueuc(Queuc&Q)//创建空队列
+{
+	Q.elem = (int*)malloc(QUEUC_INIT_SIZE * sizeof(int));
+	Q.front = 0;
+	Q.rear = 0;
+}
+void DestroyQueuc(Queuc&Q)
+{
+	if (Q.elem)
+	{
+		delete Q.elem;
+		Q.front = 0;
+		Q.rear = 0;
+	}
+}
+void ClearQueuc(Queuc&Q)
+{
+	if (Q.elem)
+		Q.front = Q.rear = 0;
+}
+bool QueucEmpty(Queuc Q)
+{
+	if (Q.elem)
+		return false;
+	else
+		return true;
+}
+int QueucLength(Queuc Q)
+{
+	if (Q.elem)
+		return Q.front - Q.rear;
+	else
+		return ERROR;
+}
+void GetHead(Queuc Q, int&e)//返回队首数据
+{
+	if (Q.elem&&Q.front != Q.rear)
+		e = Q.elem[Q.front - 1];
+}
+void EnQueuc(Queuc &Q,int&e)//入队操作
+{
+	if ((Q.rear + 1) % QUEUC_INIT_SIZE == Q.front)
+		return;
+	Q.elem[Q.rear] = e;
+	Q.rear = (Q.rear + 1) % QUEUC_INIT_SIZE;
+}
+void DelQueuc(Queuc&Q, int&e)//出队操作
+{
+	if (Q.front == Q.rear)
+		return;
+	e = Q.elem[Q.front];
+	Q.front =( Q.front + 1) % QUEUC_INIT_SIZE;
+}
+void TraverseQueuc(Queuc&Q)//简单的遍历队列
+{
+	int i = Q.front;
+	while (i != Q.rear)
+	{
+		cout << Q.elem[i]<<endl;
+		i++;
+	}
+}
