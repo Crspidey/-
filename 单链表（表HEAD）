@@ -9,7 +9,8 @@ typedef struct LNode
 }LNode, *LinkList;
 void InitList_L(LinkList&L,int n)//创建一个结点数为n的链表
 {
-	L = new LNode;
+	//在主函数给L个空间，例如 LinkList L=new LNode;
+	
 	int i = 0;
 	L = NULL;
 	LNode*p1, *p2;
