@@ -55,19 +55,29 @@ void ListInser_L(LinkList&L, int i, int &e)//在第i个位置插入一个数据�
 }
 void ListDelete_L(LinkList&L, int i, int&e)//删除第i个位置的数据元素并返回该数据元素
 {
+	int n=ListLength_L(L)
 	LinkList p = L;
 	int j = 1;
-	while (p && j < i - 1)//寻找到第i个位置的前一个位置
-	{
-		p = p->next;
-		++j;
-	}
-	if (!p || j > i)
+	if (!p || j > i||i>n)
 		return;
-	LinkList q = p->next;
-	e = q->data;
-	p->next = q->next;
-	delete q;
+	if(i==1)
+	{
+		LinkList p=L;
+		L=p.next;
+		delete p;
+	}
+	else
+	{
+		while (p && j < i - 1)//寻找到第i个位置的前一个位置
+		{
+			p = p->next;
+			++j;
+		}
+		LinkList q = p->next;
+		e = q->data;
+		p->next = q->next;
+		delete q;
+	}
 }
 int ListLength_L(LinkList L)//返回该链表长度
 {
