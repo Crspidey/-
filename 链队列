@@ -1,0 +1,112 @@
+#include<iostream>
+using namespace std;
+ typedef struct QNode
+{
+	int data;//暂且把数据设为整型
+	QNode*next;
+}QNode, *QueuePtr;
+struct LinkQueue {
+	QueuePtr front;
+	QueuePtr rear;
+};
+void InitQueue(LinkQueue&Q)
+{
+	Q.front = new QNode;
+	Q.rear = new QNode;
+	Q.rear = Q.front;
+	if (!Q.front)
+	{
+		cout << "无法提供内存空间" << endl;
+		return;
+	}
+	else
+		Q.front->next = NULL;
+}
+void DestroyQueue(LinkQueue&Q)
+{
+	while (Q.front)
+	{
+		Q.rear = Q.front->next;
+		delete Q.front;
+		Q.front = Q.rear;
+	}
+}
+void ClearQueue(LinkQueue&Q)//将Q清空为空队列
+{
+	//先摧毁
+	while (Q.front)
+	{
+		Q.rear = Q.front->next;
+		delete Q.front;
+		Q.front = Q.rear;
+	}
+	//再设置个空队列
+	Q.front = new QNode;
+	Q.rear = new QNode;
+	Q.rear = Q.front;
+	if (!Q.front)
+	{
+		cout << "内存分配失败" << endl;
+		return;
+	}
+	else
+		Q.front->next = NULL;
+}
+bool QueueEmpty(LinkQueue Q)//判断是否为空队列
+{
+	if (Q.front== Q.rear)
+		return true;
+	else
+		return false;
+}
+int QueueLength(LinkQueue Q)//返回队列长度
+{
+	int i = 0;
+	while (Q.front->next != NULL)
+	{
+		i++;
+		Q.front = Q.front->next;
+	}
+	return i;
+}
+void GetHead(LinkQueue Q, int&e)//若队列不空，用e返回队头元素
+{
+	if (Q.front->next != NULL)
+	{
+		e = Q.front->next->data;
+	}
+}
+void EnQueue(LinkQueue&Q, int e)//插入元素e为Q的新的队尾元素
+{
+	QueuePtr p = new QNode;
+	if (!p)
+	{
+		cout << "内存分配失败" << endl;
+		return;
+	}
+	else {
+		p->data = e, p->next = NULL;
+		Q.rear->next = p;
+		Q.rear = p;
+	}
+}
+void DeQueue(LinkQueue&Q, int&e)//若队列不空，则删除Q的队头元素并用e返回其值
+{
+	QueuePtr p = Q.front;
+	if (Q.front != Q.rear)
+	{
+		Q.front = Q.front->next;
+		e = Q.front->data;
+		delete p;
+	}
+}
+//遍历链队列（随便写的）
+void QueueTraverse(LinkQueue Q)//具体情况可能会用到另外的函数来方便遍历
+{
+	while (Q.front != Q.rear)
+	{
+		cout << Q.front->next->data << endl;
+		Q.front = Q.front->next;
+	}
+
+}
