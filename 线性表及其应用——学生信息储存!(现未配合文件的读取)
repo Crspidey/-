@@ -1,0 +1,318 @@
+项目名称：学生信息管理系统
+项目内容：设计一个学生信息管理系统，实现对学生基本信息的添加、删除、修改和查询等操作，其中每个学生信息包含学号，姓名和绩点。要求系统完成以下主要功能：
+（1）显示：显示当前所有学生信息记录；
+（2）录入：从键盘输入一条学生信息记录，插入到表中指定的位置；
+（3）查找：根据学号或者记录的位置查找学生的各项信息；
+（4）删除：删除指定位置的学生信息记录；
+（5）更新：更新指定位置的学生信息记录；
+（6）统计：统计表中学生人数。
+ (7) 排序：按照学号或者绩点进行排序
+（8）清空：清空表中所有记录
+
+
+
+程序为：
+#include<iostream>
+#include<string>
+using namespace std;
+typedef    struct Student
+{
+	string name;
+	int num;
+	double score;
+	Student*next;
+}*LinkList;
+//录入学生信息
+void InitList_Student(LinkList&p)
+{
+	p = NULL;
+	LinkList p1, p2;
+	p1 = new Student;
+	cout << "请依次输入学生的学号，姓名和绩点:";
+	cin >> p1->num >> p1->name>> p1->score;
+	p2 = p1;
+	while (p1->num != -1)
+	{
+		if (p == NULL)
+			p = p1;
+		else
+			p2->next = p1;
+		p2 = p1;
+		p1 = new Student;
+		cout << "请继续输入以上信息(若信息完成，将学号输入为-1，谢谢！):";
+		cin >> p1->num >> p1->name >> p1->score;
+	}
+	p2->next = NULL;
+	delete p1;
+}
+//显示当前所有学生信息记录
+void TraverseStudent(LinkList p)
+{
+	while (p)
+	{
+		cout << "学号：" << p->num << "		姓名是：" << p->name << "		绩点：" << p->score << endl;
+		p = p->next;
+	}
+}
+//统计表中学生人数
+int GetNumber(LinkList p)
+{
+	int i = 0;
+	while (p)
+	{
+		i++;
+		p = p->next;
+	}
+	return i;
+}
+//根据学号查找学生的各项信息
+void Find_Information_By_Number(LinkList p, int num_m)
+{
+	while (p)
+	{
+		if (p->num == num_m)
+		{
+			cout << "你所查找的学号为" << p->num << "的学生" << "姓名是" << p->name << "，绩点是：" << p->score << endl;
+			return;
+		}
+		else
+			p = p->next;
+	}
+	if (!p)
+		cout << "你所查找的学生不存在！"<<endl;
+}
+//根据记录的位置查找学生的各项信息
+void Find_Information_By_Location(LinkList p, int i)
+{
+	int n = GetNumber(p);
+	int j = 1;
+	if (!p || j > i||i>n)//条件要齐全
+	{
+		cout << "没有该位置的学生！请重新输入！" << endl;
+		return;
+	}
+	//寻找至该节点
+	while (p&&j < i)
+	{
+		p = p->next;
+		++j;
+	}
+	if(p)
+	cout << "你所查找的学生的学号是：" << p->num << "，姓名是：" << p->name << "，绩点是：" << p->score << endl;
+}
+//删除指定位置的学生信息记录
+void Delete_Student_By_Location(LinkList&p, int i)	
+{
+	int n = GetNumber(p);
+	int j = 1;
+	if (!p || j > i||i>n)
+	{
+		cout << "没有该位置的学生！请重新输入！" << endl;
+		return;
+	}
+	//该位置是链首
+	if (i==1)
+	{
+		LinkList q = p;
+		p = p->next;
+		delete q;
+
+	}
+	//寻找至该位置的前一个结点
+	//该位置是链间或链尾
+	else
+	{
+		while (p&&j < i - 1)
+		{
+			p = p->next;
+			++j;
+		}
+		if (p)
+		{
+			LinkList q = p->next;
+			p->next = q->next;
+			delete q;
+		}
+	}
+}
+//更新指定位置的学生信息记录
+void ChangeStudent(LinkList&p,int i)
+{
+	int n = GetNumber(p);
+	int j = 1;
+	if (!p || j > i||i>n)
+	{
+		cout << "没有该位置的学生！请重新输入！" << endl;
+		return;
+	}
+	//寻找至该节点
+	while (p&&j < i)
+	{
+		p = p->next;
+		++j;
+	}
+	if (p)
+	{
+		cout << "现在更新第" << i << "个位置的同学信息，请依次输入他的学号，姓名和绩点：";
+		cin >> p->num >> p->name >> p->score;
+	}
+}
+void ListInser_L(LinkList&p, int i)//在第i个位置插入一个数据元素
+{
+
+	int n = GetNumber(p);
+	int j = 1;
+	if (!p || j > i || i > n+1)
+	{
+		cout << "无法插入该位置！请重新输入！" << endl;
+		return;
+	}
+	LinkList q = new Student;
+	cout << "请按照上面提示输入你想插入的学生信息：";
+	cin >> q->num >> q->name >> q->score;
+	//在链首插入元素
+	if (i == 1)
+	{
+		q->next = p;
+		p = q;
+	}
+	//寻找至该位置的前一个结点
+	//在链间或链尾插入
+	else
+	{
+		while (p&&j < i - 1)
+		{
+			p = p->next;
+			++j;
+		}
+		if (p)
+		{
+			q->next = p->next;
+			p->next = q;
+		}
+	}
+	
+	
+}
+//按照绩点从低到高排序!!!
+
+void PaiXu_By_Score(LinkList&p)
+{
+	int n = GetNumber(p);
+	LinkList head = p;
+	LinkList q = new Student;
+	LinkList a;
+	LinkList b ;
+	for (int i = 0; i < n - 1; i++)
+	{
+		p = head;
+		for (int j = 0; j < n-1; j++)
+		{
+			a = p;
+			b = p->next;
+			if ((a->score) > (b->score))
+			{
+				{
+				q->score = a->score;
+				a->score = b->score;
+				b->score = q->score;
+				}
+				{
+					q->name = a->name;
+					a->name = b->name;
+					b->name = q->name;
+				}
+				{
+					q->num = a->num;
+					a->num = b->num;
+					b->num = q->num;
+				}
+			}
+			p = p->next;
+			if (p == NULL)
+				break;
+		}
+	}
+	p = head;
+}
+//按照学号从低到高排序!!!
+
+void PaiXu_By_Num(LinkList  &  p)
+{
+	int n = GetNumber(p);
+	LinkList head = p;
+	LinkList q = new Student;
+	LinkList a;
+	LinkList b;
+	for (int i = 0; i < n - 1; i++)
+	{
+		p = head;
+		for (int j = 0; j < n - 1 - i; j++)
+		{
+			a = p;
+			b = p->next;
+			if ((a->num) > (b->num))
+			{
+				{q->score = a->score;
+				a->score = b->score;
+				b->score = q->score;
+				}
+				{
+					q->name = a->name;
+					a->name = b->name;
+					b->name = q->name;
+				}
+				{
+					q->num = a->num;
+					a->num = b->num;
+					b->num = q->num;
+				}
+			}
+			p = p->next;
+			if (p == NULL)
+				break;
+		}
+	}
+	p = head;
+}
+//清空表中所有纪录
+void Clear_Student_List(LinkList&p)
+{
+	delete p;
+}
+int main()
+{
+	int sum = 0;
+	string a;
+	int i;
+	LinkList p;
+	InitList_Student(p);//录入学生信息
+	TraverseStudent(p);//显示学生信息
+	sum=GetNumber(p);
+	cout << "现在已经录入的学生共有" << sum << "人"<<endl<<endl<<endl;
+	cout << "需要更新某一位置的学生吗，如果需要，请输入yes并输入更新位置：";
+	cin >> a >> i;
+	if(a=="yes")
+	ChangeStudent(p, i);
+	cout << endl << endl << "需要位置查找某一学生的信息吗？如若需要请输入yes并输入位置：";
+	cin >> a >> i;
+	if (a == "yes")
+		Find_Information_By_Location(p, i);
+	cout << endl << endl << "需要根据学号查找某一学生的信息吗？如若需要请输入yes并输入学号：";
+	cin >> a >> i;
+	if (a == "yes")
+		Find_Information_By_Number(p, i);
+	cout << endl << endl << "需要插入新的学生的信息吗？如若需要请输入yes并输入插入位置：";
+	cin >> a >> i;
+	if (a == "yes")
+		ListInser_L(p, i);
+	PaiXu_By_Score(p);
+	cout << endl << endl << "经过所有的工作，先按照绩点排序，排序后得到的学生名单为：" << endl;
+	TraverseStudent(p);
+	system("pause");
+	return 0;
+
+}
+
+
+
