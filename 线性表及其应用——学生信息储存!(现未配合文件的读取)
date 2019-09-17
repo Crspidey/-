@@ -10,8 +10,7 @@
 （8）清空：清空表中所有记录
 
 
-
-程序为：
+具体程序为：
 #include<iostream>
 #include<string>
 using namespace std;
@@ -103,6 +102,7 @@ void Find_Information_By_Location(LinkList p, int i)
 //删除指定位置的学生信息记录
 void Delete_Student_By_Location(LinkList&p, int i)	
 {
+	LinkList head = p;
 	int n = GetNumber(p);
 	int j = 1;
 	if (!p || j > i||i>n)
@@ -134,10 +134,12 @@ void Delete_Student_By_Location(LinkList&p, int i)
 			delete q;
 		}
 	}
+	p = head;
 }
 //更新指定位置的学生信息记录
 void ChangeStudent(LinkList&p,int i)
 {
+	LinkList head = p;
 	int n = GetNumber(p);
 	int j = 1;
 	if (!p || j > i||i>n)
@@ -156,10 +158,11 @@ void ChangeStudent(LinkList&p,int i)
 		cout << "现在更新第" << i << "个位置的同学信息，请依次输入他的学号，姓名和绩点：";
 		cin >> p->num >> p->name >> p->score;
 	}
+	p = head;
 }
 void ListInser_L(LinkList&p, int i)//在第i个位置插入一个数据元素
 {
-
+	LinkList head = p;
 	int n = GetNumber(p);
 	int j = 1;
 	if (!p || j > i || i > n+1)
@@ -192,7 +195,7 @@ void ListInser_L(LinkList&p, int i)//在第i个位置插入一个数据元素
 		}
 	}
 	
-	
+	p = head;
 }
 //按照绩点从低到高排序!!!
 
@@ -282,37 +285,68 @@ void Clear_Student_List(LinkList&p)
 }
 int main()
 {
-	int sum = 0;
 	string a;
+	int sum = 0;
 	int i;
+	int n;
 	LinkList p;
 	InitList_Student(p);//录入学生信息
 	TraverseStudent(p);//显示学生信息
 	sum=GetNumber(p);
 	cout << "现在已经录入的学生共有" << sum << "人"<<endl<<endl<<endl;
-	cout << "需要更新某一位置的学生吗，如果需要，请输入yes并输入更新位置：";
-	cin >> a >> i;
-	if(a=="yes")
-	ChangeStudent(p, i);
-	cout << endl << endl << "需要位置查找某一学生的信息吗？如若需要请输入yes并输入位置：";
-	cin >> a >> i;
-	if (a == "yes")
-		Find_Information_By_Location(p, i);
-	cout << endl << endl << "需要根据学号查找某一学生的信息吗？如若需要请输入yes并输入学号：";
-	cin >> a >> i;
-	if (a == "yes")
-		Find_Information_By_Number(p, i);
-	cout << endl << endl << "需要插入新的学生的信息吗？如若需要请输入yes并输入插入位置：";
-	cin >> a >> i;
-	if (a == "yes")
-		ListInser_L(p, i);
-	PaiXu_By_Score(p);
-	cout << endl << endl << "经过所有的工作，先按照绩点排序，排序后得到的学生名单为：" << endl;
+	cout << "现有以下操作，输入yes获得功能实现：" << endl;
+	cout << "1——更新；2——按位置查找；3——按学号查找；4——按位置插入学生；5——按绩点把现有学生排序并显示；6——按学号把现有学生排序并显示" << endl;
+	cout << "请输入：";
+	cin >> a;
+	while (1)
+	{
+		if (a == "yes")
+		{
+			cout << "输入上述数字获得相应功能：" << endl;
+			cin >> n;
+			switch (n)
+			{
+			case 1:
+				cout << "请输入学生位置：";
+				cin >> i;
+				ChangeStudent(p, i); break;
+			case 2:
+				cout << "请输入学生位置：";
+				cin >> i;
+				Find_Information_By_Location(p, i); break;
+			case 3:
+				cout << "请输入学生学号：";
+				cin >> i;
+				Find_Information_By_Number(p, i);
+				break;
+			case 4:
+				cout << "请输入插入位置:";
+				cin >> i;
+				ListInser_L(p, i);
+				break;
+			case 5:
+				PaiXu_By_Score(p);
+				cout << endl << endl << "按照绩点排序，排序后得到的学生名单为：" << endl;
+				TraverseStudent(p);
+				break;
+			case 6:
+				PaiXu_By_Num(p);
+				cout << endl << endl << "按照学号排序，排序后得到的学生名单为：" << endl;
+				TraverseStudent(p);
+				break;
+			default:
+				cout << "输入错误！";
+			}
+		}
+		else
+			break;
+		cout << "你还需要继续获得功能吗？";
+		cin >> a;
+	}
+	TraverseStudent(p);
+	cout << endl << endl << endl << endl << "最后获得的学生名单经绩点从低到高排序结果为：" << endl;
 	TraverseStudent(p);
 	system("pause");
 	return 0;
-
 }
-
-
 
