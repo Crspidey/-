@@ -11,6 +11,8 @@ struct Queuc
 void InitQueuc(Queuc&Q)//创建空队列
 {
 	Q.elem = (int*)malloc(QUEUC_INIT_SIZE * sizeof(int));
+	if(!Q.elem)
+	return;
 	Q.front = 0;
 	Q.rear = 0;
 }
