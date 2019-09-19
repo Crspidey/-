@@ -1,3 +1,4 @@
+//队列数据以int类型为例
 #include<iostream>
 using namespace std;
 #define ERROR -2
@@ -16,7 +17,7 @@ void InitQueuc(Queue&Q)//创建空队列
 	Q.front = 0;
 	Q.rear = 0;
 }
-void DestroyQueuc(Queue&Q)
+void DestroyQueuc(Queue&Q)//摧毁队列
 {
 	if (Q.elem)
 	{
@@ -25,29 +26,29 @@ void DestroyQueuc(Queue&Q)
 		Q.rear = 0;
 	}
 }
-void ClearQueuc(Queue&Q)
+void ClearQueuc(Queue&Q)//请空队列
 {
 	if (Q.elem)
 		Q.front = Q.rear = 0;
 }
-bool QueucEmpty(Queue Q)
+bool QueucEmpty(Queue Q)//判断队列是否为空
 {
 	if (Q.elem)
 		return false;
 	else
 		return true;
 }
-int QueucLength(Queue Q)
+int QueucLength(Queue Q)//返回队列长度
 {
 	if (Q.elem)
-		return Q.front - Q.rear;
+		return Q.rear - Q.front;
 	else
 		return ERROR;
 }
 void GetHead(Queue Q, int&e)//返回队首数据
 {
 	if (Q.elem&&Q.front != Q.rear)
-		e = Q.elem[Q.front - 1];
+		e = Q.elem[Q.front];
 }
 void EnQueuc(Queue &Q, int&e)//入队操作
 {
@@ -63,7 +64,7 @@ void DelQueuc(Queue&Q, int&e)//出队操作
 	e = Q.elem[Q.front];
 	Q.front = (Q.front + 1) % QUEUC_INIT_SIZE;
 }
-void TraverseQueuc(Queue&Q)//简单的遍历队列
+void TraverseQueuc(Queue&Q)//简单的遍历队列(可用其他函数来更好遍历)
 {
 	int i = Q.front;
 	while (i != Q.rear)
