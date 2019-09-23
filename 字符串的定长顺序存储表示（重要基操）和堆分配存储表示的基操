@@ -1,0 +1,148 @@
+#include<iostream>
+#include<string>
+#define ERROR 0
+#define INFEASIBLE -1
+using namespace std;
+//
+//
+//定长顺序表示
+
+#define maxstrlen 255
+typedef unsigned char SString[maxstrlen + 1];
+void Concat(SString&T, SString S1, SString S2)
+{
+	//两者的字符数小于maxstrlen
+	if (S1[0] + S2[0] < maxstrlen)
+	{
+		T[0] = S1[0]+S2[0];
+		for (int i = 1; i <= S1[0]; i++)
+			T[i] = S1[i];
+		for (int i = S1[0] + 1; i <= S1[0] + S2[0]; i++)
+			T[i] = S2[i-S1[0]];
+	}
+	//S1的字符数等于255
+	else if (S1[0] == maxstrlen)
+	{
+		T[0] = maxstrlen;
+		for (int i = 1; i <= maxstrlen; i++)
+			T[i] = S1[i];
+	}
+	//S1和S2的字符总数大于255，则需要把S2部分截断
+	else
+	{
+		T[0] = maxstrlen;
+		for (int i = 1; i <= S1[0]; i++)
+			T[i] = S1[i];
+		for (int i = S1[0] + 1; i <= maxstrlen; i++)
+			T[i] = S2[i - S1[0]];
+	}
+}
+void SubString(SString&Sub, SString S, int pos, int len)
+{
+	if (pos<1 || pos>S[0] || pos + len - 1 > S[0] || len < 0)
+		return;
+	else {
+		Sub[0] = len;
+		for (int i = 1; i <= len; i++)
+		{
+			Sub[i] = S[pos + i - 1];
+		}
+	}
+}
+
+//
+//
+//
+
+
+
+//堆分配存储表示
+struct HString
+{
+	char *ch;
+	int length;
+};
+void StrAssign(HString&T, char*chars)//生成一个其值等于串常量chars的串T
+{
+	if (chars == NULL)
+		return;
+	else
+	{
+		T.ch = chars;
+		int i = 0;
+		while (T.ch[i] != '0')
+			i++;
+		T.length = i;
+	}
+}
+int StringLength(HString T)//返回字符串长度
+{
+	return T.length;
+}
+int StrCompare(HString T,HString S)//比较两字符串的大小
+{
+	for (int i = 0; i < T.length&&i < S.length; i++)
+	{
+		if (T.ch[i] != S.ch[i])
+			return T.ch[i] - S.ch[i];
+		return T.length - S.length;
+	}
+}
+void ClearString(HString&T)//将串T清空并释放其所占空间
+{
+	T.length = 0;
+	free(T.ch);
+}
+void Concat(HString&T, HString S1, HString S2)//S1,S2连接成新串
+{
+
+	if (T.ch)
+		free(T.ch);
+	if (!(T.ch = (char*)malloc((S1.length + S2.length) * sizeof(char))))
+		return;
+	T.length = S1.length + S2.length;
+	for (int i = 0; i < S1.length; i++)
+		T.ch[i] = S1.ch[i];
+	for (int i = S1.length; i < T.length; i++)
+		T.ch[i] = S2.ch[i - S1.length];
+}
+void SubString(HString&Sub,HString T, int pos, int len)//返回串T的第pos个字符起长度为len的字符串
+{
+	if (!T.ch || pos<1 || pos>T.length || len<0 || pos + len>T.length + 1)
+		return;
+	if (Sub.ch)
+		delete Sub.ch;
+	else
+	{
+		Sub.ch = (char*)malloc(len * sizeof(char));
+		for (int i = pos - 1; i < len + pos; i++)
+			Sub.ch[i + 1 - pos] = T.ch[i];
+		Sub.length = len;
+	}
+}
+void StrCopy(HString&T, HString S)//字符序列的复制
+{
+	if (T.ch != NULL)
+		free(T.ch);
+	else if (S.length != 0)
+	{
+		T.ch = (char*)malloc(S.length * sizeof(char));
+		T.length = S.length;
+		for (int i = 0; i < S.length; i++)
+			T.ch[i] = S.ch[i];
+	}
+}
+void StrInser(HString&T,int pos, HString S)//串插入算法（pos为position，位置）
+{
+	if (pos<1 || pos>T.length+1)
+		return;
+	else if(S.length)
+	{
+		if (!(T.ch = (char *)realloc(T.ch, (T.length + S.length) * sizeof(char))))
+			return;
+		for (int i = T.length + S.length - 1; i >= S.length + pos - 1; i--)
+			T.ch[i] = T.ch[i-S.length];
+		for (int i = pos - 1; i < pos + S.length - 1; i++)
+			T.ch[i] = S.ch[i - pos +1];
+	}
+}
