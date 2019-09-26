@@ -1,0 +1,175 @@
+#include<iostream>
+using namespace std;
+#define STACK_INIT_SIZE 100
+#define STACKINCREMENT 10
+typedef struct BTreeNode
+{
+	char data;
+	BTreeNode*rchild;
+	BTreeNode*lchild;
+
+} *BiTree;
+struct Stack
+{
+	BiTree *base;
+	BiTree *top;
+	int stacksize;//栈的空间大小
+};
+void InitStack(Stack&S)//构造一个空栈
+{
+	S.base = (BiTree*)malloc(STACK_INIT_SIZE * sizeof(BiTree));
+	if (S.base == NULL)
+		cout << "内存分配失败，请重新尝试！";
+	else
+	{
+		S.top = S.base;
+		S.stacksize = STACK_INIT_SIZE;
+	}
+}
+bool IsEmpty(Stack S)// 判断栈是否为空
+{
+	if (S.base == S.top)
+		return true;
+	else
+		return false;
+}
+void Push(Stack&S, BiTree e)//入栈
+{
+	if (S.base)
+	{
+
+		if (S.top - S.base >= S.stacksize)
+		{
+			S.base = (BiTree*)realloc(S.base, (S.stacksize + STACKINCREMENT) * sizeof(BiTree));
+			if (!S.base)
+				return;
+			S.top = S.base + S.stacksize;
+			S.stacksize += STACKINCREMENT;
+		}
+		*S.top = e;
+		S.top++;//？？？？（如果top指向最后一个内存空间，则top++得到的结果是什么）
+	}
+}
+void Pop(Stack&S, BiTree&e)//出栈
+{
+	if (S.top == S.base)
+		return;
+	e = *(S.top - 1);
+	S.top--;
+}
+
+
+
+
+
+
+
+
+
+
+
+void CreatBiTree(BiTree&T)
+{
+	char ch;
+	cin >> ch;
+	if (ch == '#')
+		T = NULL;
+	else
+	{
+		if (!(T = new BTreeNode))
+			return;
+		T->data = ch;
+		CreatBiTree(T->lchild);
+		CreatBiTree(T->rchild);
+	}
+
+}
+void PreOrderTraverse(BiTree T)//先序遍历
+{
+	if(T)
+	{
+		cout << T->data;
+		PreOrderTraverse(T->lchild);
+		PreOrderTraverse(T->rchild);
+	}
+}
+void InOrderTraverse(BiTree T)//中序遍历
+{
+	if (T)
+	{
+		InOrderTraverse(T->lchild);
+		cout << T->data << " ";
+		InOrderTraverse(T->rchild);
+	}
+}
+void PostOrderTraverse(BiTree T)//后序遍历
+{
+	if (T)
+	{
+		PostOrderTraverse(T->lchild);
+		PostOrderTraverse(T->rchild);
+		cout << T->data << "  ";
+	}
+}
+void GetNode(BiTree T, int&count)//求结点
+//请先在使用这个函数前将第二个参数的大小设为0
+{
+	if (T)
+	{
+		count++;
+		GetNode( T->lchild, count);
+		GetNode( T->rchild, count);
+	}
+}
+void InOrderTraverse_IM(BiTree T)//中序遍历算法的非递归写法
+{
+	Stack S;
+	InitStack(S);
+	BiTree p = T;
+	while (p || !IsEmpty(S)) {
+
+		if (p)
+		{
+			Push(S, p);
+			p = p->lchild;
+		}
+		else
+		{
+			Pop(S, p);
+			cout << p->data;
+			p = p->rchild;
+		}
+	}
+}
+int GetDepth(BiTree T)
+{
+	int Depth1;
+	int Depth2;
+	int Depth3;
+	if (!T)
+		return 0;
+	else
+	{
+		 Depth1 = GetDepth(T->lchild);
+		 Depth2 = GetDepth(T->rchild);
+		Depth3 = 1 + (Depth1 > Depth2 ? Depth1 : Depth2);
+	}
+	return Depth3;
+}
+int main()
+{
+	BiTree T;
+	cout << "先序遍历输入(以#结束):";
+	CreatBiTree(T);
+	int count = 0;
+	cout << "先序遍历为：";
+	PreOrderTraverse(T);
+	cout << "中序遍历为：";
+	InOrderTraverse_IM(T);
+	GetNode(T, count);
+	cout << endl;
+	cout <<"结点总数为："<< count << endl;
+	cout << "树的深度为：" << GetDepth(T) << endl;
+	system("pause");
+	return 0;
+}
